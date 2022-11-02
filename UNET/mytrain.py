@@ -44,6 +44,18 @@ def read_image(path):
     x = x.astype(np.float32)
     return x
 
+def read_mask(path1, path2):
+    x1 = cv2.imread(path1, cv2.IMREAD_GRAYSCALE)
+    x2 = cv2.imread(path2, cv2.IMREAD_GRAYSCALE)
+    x = x1 + x2
+    x = cv2.resize(x, (W, H))
+    x = x/np.max(x)
+    x = x > 0.5
+    x = x.astype(np.float32)
+    x = np.expand_dims(x, axis=-1)
+    return x
+
+
 if __name__ == "__main__":
     """ Seeding """
     np.random.seed(42)
@@ -67,6 +79,6 @@ if __name__ == "__main__":
     print(f"Valid: {len(valid_x)} - {len(valid_y1)} - {len(valid_y2)}")
     print(f"Test: {len(test_x)} - {len(test_y1)} - {len(test_y2)}")
 
-    x=read_image(train_x[0])
+    x=read_mask(train_y1[0], train_y2[0])
     print(x.shape)
-    cv2.imwrite("img1.png",x*225)
+    cv2.imwrite("mask1.png",x*225)
